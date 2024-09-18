@@ -4,7 +4,7 @@ import { generateSchedule } from "~/schedule";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Beachliga!" },
+    { title: "BeachLiga" },
     {
       name: "Beachliga",
       content: "Beachliga Beach Volleyball",
