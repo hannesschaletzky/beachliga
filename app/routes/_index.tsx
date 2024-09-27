@@ -25,6 +25,7 @@ export const loader = async () => {
 export default function Index() {
   const data = useLoaderData<typeof loader>();
 
+  console.log(data);
   return (
     <>
       <div>Hello</div>
