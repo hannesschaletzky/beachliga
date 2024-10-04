@@ -28,7 +28,7 @@ export async function action({ request }: ActionFunctionArgs) {
   if (request.method == "POST") {
     const newLeague: LeagueRecord = {
       id: "league" + currentId++,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date().toString(),
       leagueName: (formDataObject.leagueName as string) || "Untitled League",
       numberOfTeams: Number(formDataObject.numberOfTeams) || 0,
       numberOfGamedays: Number(formDataObject.numberOfGamedays) || 0,
@@ -54,11 +54,11 @@ export async function action({ request }: ActionFunctionArgs) {
 export async function loader() {
   const leagues = await getStoredLeagues();
 
-  return json({ leagues }); // Return an object with leagues
+  return json({ leagues });
 }
 
 export default function Admin() {
-  const { leagues } = useLoaderData<{ leagues: LeagueRecord[] }>(); // Correct type
+  const { leagues } = useLoaderData<{ leagues: LeagueRecord[] }>();
   const [contentState, setContentState] = useState(ContentState.initial);
   const [editingLeague, setEditingLeague] = useState<LeagueRecord | null>(null);
 

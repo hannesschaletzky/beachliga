@@ -1,17 +1,14 @@
 import fs from "fs/promises";
 
-type LeagueMutation = {
-  id?: string;
-  leagueName?: string;
-  numberOfTeams?: number;
-  numberOfGamedays?: number;
-  numberOfCourts?: number;
-  adress?: string;
-};
 const leaguesFilePath = "leagues.json";
 
-export type LeagueRecord = LeagueMutation & {
+export type LeagueRecord = {
   id: string;
+  leagueName: string;
+  numberOfTeams: number;
+  numberOfGamedays: number;
+  numberOfCourts: number;
+  adress: string;
   createdAt: string;
 };
 
@@ -25,7 +22,7 @@ export async function getStoredLeagues(): Promise<LeagueRecord[]> {
       "Error reading leagues file, returning an empty array:",
       error
     );
-    return []; // Return an empty array if there's an error
+    return [];
   }
 }
 
@@ -38,7 +35,7 @@ export async function getLeague(id: string) {
   return leagues.find((league) => league.id === id) || null;
 }
 
-export async function updateLeague(id: string, updates: LeagueMutation) {
+export async function updateLeague(id: string, updates: LeagueRecord) {
   const leagues = await getStoredLeagues();
   const updatedLeagues = leagues.map((league) =>
     league.id === id ? { ...league, ...updates } : league
