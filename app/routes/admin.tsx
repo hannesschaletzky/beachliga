@@ -1,14 +1,17 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+
 import { ActionFunctionArgs, json, redirect } from "@remix-run/node";
-import { Form, Link, useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import CreateLeague from "~/components/createLeague";
 import EditLeague from "~/components/editLeague";
 
 import {
-  getStoredLeagues,
-  storeLeagues,
   LeagueRecord,
   deleteLeague,
+  getStoredLeagues,
+  storeLeagues,
 } from "../data";
 
 enum ContentState {
@@ -59,8 +62,6 @@ export default function Admin() {
   const [contentState, setContentState] = useState(ContentState.initial);
   const [editingLeague, setEditingLeague] = useState<LeagueRecord | null>(null);
 
-  console.log(editingLeague);
-
   return (
     <div className="flex h-screen bg-gray-100">
       <div className="w-75 flex flex-col bg-white shadow-lg">
@@ -85,21 +86,16 @@ export default function Admin() {
           {leagues.length ? (
             <ul>
               {leagues.map((league: LeagueRecord) => (
-                <li
-                  className=" flex justify-between items-center hover:bg-gray-100 p-3 m-1 rounded-lg"
+                <div
+                  className=" flex justify-between items-center hover:bg-gray-100 p-3 m-1 rounded-lg cursor-pointer"
                   key={league.id}
+                  onClick={() => {
+                    setEditingLeague(league);
+                    setContentState(ContentState.editLeague);
+                  }}
                 >
-                  <button
-                    onClick={() => {
-                      const newObject = Object.assign({}, league);
-                      setEditingLeague(newObject);
-
-                      setContentState(ContentState.editLeague);
-                    }}
-                  >
-                    {league.leagueName || <i>No Name</i>}
-                  </button>
-                </li>
+                  <div>{league.leagueName || <i>No Name</i>}</div>
+                </div>
               ))}
             </ul>
           ) : (

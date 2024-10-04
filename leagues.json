@@ -1,29 +1,29 @@
 [
   {
-    "id": "league7",
-    "createdAt": "2024-10-04T13:28:22.734Z",
-    "leagueName": "Sommer27",
-    "numberOfTeams": 0,
-    "numberOfGamedays": 0,
-    "numberOfCourts": 0,
-    "adress": "No Address Provided"
+    "id": "league1",
+    "createdAt": "2024-10-04T14:03:34.002Z",
+    "leagueName": "liga1",
+    "numberOfTeams": 2,
+    "numberOfGamedays": 5,
+    "numberOfCourts": 3,
+    "adress": "test123"
   },
   {
-    "id": "league8",
-    "createdAt": "2024-10-04T13:28:41.676Z",
-    "leagueName": "Sommer27",
-    "numberOfTeams": 0,
-    "numberOfGamedays": 0,
-    "numberOfCourts": 0,
-    "adress": "No Address Provided"
+    "id": "league2",
+    "createdAt": "2024-10-04T14:03:57.219Z",
+    "leagueName": "liga",
+    "numberOfTeams": 2,
+    "numberOfGamedays": 20,
+    "numberOfCourts": 294,
+    "adress": "jidowajdas"
   },
   {
-    "id": "league9",
-    "createdAt": "2024-10-04T13:28:50.149Z",
-    "leagueName": "Sommer28",
-    "numberOfTeams": 0,
-    "numberOfGamedays": 0,
-    "numberOfCourts": 0,
-    "adress": "No Address Provided"
+    "id": "league3",
+    "createdAt": "2024-10-04T14:14:49.886Z",
+    "leagueName": "liga2",
+    "numberOfTeams": 2,
+    "numberOfGamedays": 2,
+    "numberOfCourts": 2,
+    "adress": "2"
   }
 ]

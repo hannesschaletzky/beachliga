@@ -29,7 +29,7 @@ export default function CreateLeague(props: LeagueProps) {
           <input
             name="numberOfTeams"
             placeholder="1-64"
-            type="text"
+            type="number"
             className="p-2 border border-gray-300 rounded"
           />
         </div>

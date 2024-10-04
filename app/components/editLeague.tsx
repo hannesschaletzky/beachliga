@@ -1,4 +1,5 @@
 import { Form } from "@remix-run/react";
+import { useEffect, useState } from "react";
 import { LeagueRecord } from "../data";
 
 export default function EditLeague({
@@ -8,6 +9,22 @@ export default function EditLeague({
   league: LeagueRecord;
   cancel: () => void;
 }) {
+  const [leagueName, setLeagueName] = useState(league.leagueName);
+  const [numberOfTeams, setNumberOfTeams] = useState(league.numberOfTeams);
+  const [numberOfGamedays, setNumberOfGamedays] = useState(
+    league.numberOfGamedays
+  );
+  const [numberOfCourts, setNumberOfCourts] = useState(league.numberOfCourts);
+  const [address, setAddress] = useState(league.adress);
+
+  useEffect(() => {
+    setLeagueName(league.leagueName);
+    setNumberOfTeams(league.numberOfTeams);
+    setNumberOfGamedays(league.numberOfGamedays);
+    setNumberOfCourts(league.numberOfCourts);
+    setAddress(league.adress);
+  }, [league]);
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-md w-150">
       <h1 className="text-xl font-bold mb-6 text-center">Liga bearbeiten</h1>
@@ -24,47 +41,57 @@ export default function EditLeague({
           <span className="text-right text-lg w-48">Liganame:</span>
           <input
             name="leagueName"
-            defaultValue={league.leagueName}
+            value={leagueName}
+            onChange={(e) => setLeagueName(e.target.value)}
             type="text"
             className="p-2 border border-gray-300 rounded"
           />
         </div>
+
         <div className="flex items-center gap-4">
           <span className="text-right text-lg w-48">Anzahl der Teams:</span>
           <input
             name="numberOfTeams"
-            defaultValue={league.numberOfTeams}
-            type="text"
+            value={numberOfTeams}
+            onChange={(e) => setNumberOfTeams(Number(e.target.value))}
+            type="number"
             className="p-2 border border-gray-300 rounded"
           />
         </div>
+
         <div className="flex items-center gap-4">
           <span className="text-right text-lg w-48">Anzahl der Spieltage:</span>
           <input
             name="numberOfGamedays"
-            defaultValue={league.numberOfGamedays}
+            value={numberOfGamedays}
+            onChange={(e) => setNumberOfGamedays(Number(e.target.value))}
             type="number"
             className="p-2 border border-gray-300 rounded"
           />
         </div>
+
         <div className="flex items-center gap-4">
           <span className="text-right text-lg w-48">Anzahl der Felder:</span>
           <input
             name="numberOfCourts"
-            defaultValue={league.numberOfCourts}
+            value={numberOfCourts}
+            onChange={(e) => setNumberOfCourts(Number(e.target.value))}
             type="number"
             className="p-2 border border-gray-300 rounded"
           />
         </div>
+
         <div className="flex items-center gap-4">
           <span className="text-right text-lg w-48">Adresse:</span>
           <input
             name="adress"
-            defaultValue={league.adress}
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
             type="text"
             className="p-2 border border-gray-300 rounded"
           />
         </div>
+
         <div className="flex justify-end space-x-4 pt-4">
           <button
             type="button"
