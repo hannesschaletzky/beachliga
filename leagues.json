@@ -9,15 +9,6 @@
     "adress": "test123"
   },
   {
-    "id": "league2",
-    "createdAt": "2024-10-04T14:03:57.219Z",
-    "leagueName": "liga",
-    "numberOfTeams": 2,
-    "numberOfGamedays": 20,
-    "numberOfCourts": 294,
-    "adress": "jidowajdas"
-  },
-  {
     "id": "league3",
     "createdAt": "2024-10-04T14:14:49.886Z",
     "leagueName": "liga2",
@@ -25,5 +16,14 @@
     "numberOfGamedays": 2,
     "numberOfCourts": 2,
     "adress": "2"
+  },
+  {
+    "id": "league1",
+    "createdAt": "Fri Oct 04 2024 16:48:39 GMT+0200 (Central European Summer Time)",
+    "leagueName": "liga1djaopsda",
+    "numberOfTeams": 2,
+    "numberOfGamedays": 5,
+    "numberOfCourts": 3,
+    "adress": "test123"
   }
 ]

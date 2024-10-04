@@ -110,7 +110,7 @@ export default function Admin() {
       </div>
 
       <div className="flex-grow flex justify-center items-center relative">
-        {contentState == ContentState.initial && <div>initial</div>}
+        {contentState == ContentState.initial && <div>🏐☀️</div>}
         {contentState == ContentState.newLeague && (
           <CreateLeague submit={() => setContentState(ContentState.initial)} />
         )}
