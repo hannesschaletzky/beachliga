@@ -1,0 +1,29 @@
+[
+  {
+    "id": "league7",
+    "createdAt": "2024-10-04T13:28:22.734Z",
+    "leagueName": "Sommer27",
+    "numberOfTeams": 0,
+    "numberOfGamedays": 0,
+    "numberOfCourts": 0,
+    "adress": "No Address Provided"
+  },
+  {
+    "id": "league8",
+    "createdAt": "2024-10-04T13:28:41.676Z",
+    "leagueName": "Sommer27",
+    "numberOfTeams": 0,
+    "numberOfGamedays": 0,
+    "numberOfCourts": 0,
+    "adress": "No Address Provided"
+  },
+  {
+    "id": "league9",
+    "createdAt": "2024-10-04T13:28:50.149Z",
+    "leagueName": "Sommer28",
+    "numberOfTeams": 0,
+    "numberOfGamedays": 0,
+    "numberOfCourts": 0,
+    "adress": "No Address Provided"
+  }
+]
