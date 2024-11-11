@@ -1,10 +1,17 @@
 import { Form } from "@remix-run/react";
+import { useState } from "react";
 
 interface LeagueProps {
   submit: () => void;
 }
 
 export default function CreateLeague(props: LeagueProps) {
+  const [name, setName] = useState("");
+  const handleChange = (e: any) => {
+    const value = e.target.value.replace(/\s/g, "");
+    const sanitizedValue = value.replace(/[^A-Za-z0-9_-]/g, ""); // Only allow letters, numbers, underscores, and hyphens
+    setName(sanitizedValue);
+  };
   return (
     <div className="bg-white p-6 rounded-lg shadow-md w-150">
       <h1 className="text-xl font-bold mb-6 text-center">Ligaerstellung</h1>
@@ -15,13 +22,19 @@ export default function CreateLeague(props: LeagueProps) {
         id="league-form"
         onSubmit={props.submit}
       >
+        <span className="text-center">
+          Liganame: Buchstaben, Zahlen, _ oder -
+        </span>
         <div className="flex items-center gap-4">
           <span className="text-right text-lg w-48">Liganame:</span>
           <input
-            name="leagueName"
+            name="name"
             placeholder="..."
             type="text"
+            value={name}
+            onChange={handleChange}
             className="p-2 border border-gray-300 rounded"
+            required
           />
         </div>
         <div className="flex items-center gap-4">

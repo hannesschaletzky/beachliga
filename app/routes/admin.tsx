@@ -3,16 +3,17 @@
 
 import { ActionFunctionArgs, json, redirect } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
-import { useState } from "react";
+import { cloneElement, useState } from "react";
 import CreateLeague from "~/components/createLeague";
 import EditLeague from "~/components/editLeague";
 
+import { League } from "../types";
 import {
-  LeagueRecord,
   deleteLeague,
-  getStoredLeagues,
-  storeLeagues,
-} from "../data";
+  getLeagues,
+  insertLeague,
+  updateLeague,
+} from "~/api/dynamo";
 
 enum ContentState {
   initial,
@@ -20,47 +21,62 @@ enum ContentState {
   editLeague,
 }
 
-let currentId = 1;
+function createLeagueFromFormData(formData: {
+  [k: string]: FormDataEntryValue;
+}) {
+  const newLeague: League = {
+    createdAt: new Date().toString(),
+    name: formData.name as string, //TODO: Name must be mandatory: check
+    numberOfTeams: Number(formData.numberOfTeams) || 0,
+    numberOfGamedays: Number(formData.numberOfGamedays) || 0,
+    numberOfCourts: Number(formData.numberOfCourts) || 0,
+    adress: (formData.adress as string) || "",
+  };
+  return newLeague;
+}
+
 export async function action({ request }: ActionFunctionArgs) {
   const body = await request.formData();
   const formDataObject = Object.fromEntries(body);
 
   if (request.method == "POST") {
-    const newLeague: LeagueRecord = {
-      id: "league" + currentId++,
-      createdAt: new Date().toString(),
-      leagueName: (formDataObject.leagueName as string) || "Untitled League",
-      numberOfTeams: Number(formDataObject.numberOfTeams) || 0,
-      numberOfGamedays: Number(formDataObject.numberOfGamedays) || 0,
-      numberOfCourts: Number(formDataObject.numberOfCourts) || 0,
-      adress: (formDataObject.adress as string) || "No Address Provided",
-    };
+    const newLeague = createLeagueFromFormData(formDataObject);
 
-    const existingLeagues = await getStoredLeagues();
-    const leaguesArray = Array.isArray(existingLeagues) ? existingLeagues : [];
-
-    const updatedLeagues = [...leaguesArray, newLeague];
-
-    await storeLeagues(updatedLeagues);
+    await insertLeague(newLeague);
   }
 
   if (request.method == "DELETE") {
-    deleteLeague(formDataObject.leagueId as string);
+    await deleteLeague(formDataObject.name as string);
+  }
+
+  if (request.method == "PUT") {
+    await deleteLeague(formDataObject.oldName as string);
+    const updatedLeague = createLeagueFromFormData(formDataObject);
+    await insertLeague(updatedLeague);
   }
 
   return redirect("/admin");
 }
 
 export async function loader() {
-  const leagues = await getStoredLeagues();
+  const leagues = await getLeagues();
+  console.log(leagues);
+  if (!leagues) {
+    console.error("Error: leagues are undefined");
+    return json({ leagues: [] });
+  }
 
   return json({ leagues });
 }
 
 export default function Admin() {
-  const { leagues } = useLoaderData<{ leagues: LeagueRecord[] }>();
+  let { leagues } = useLoaderData<{ leagues: League[] }>();
   const [contentState, setContentState] = useState(ContentState.initial);
-  const [editingLeague, setEditingLeague] = useState<LeagueRecord | null>(null);
+  const [editingLeague, setEditingLeague] = useState<League | null>(null);
+
+  if (leagues && leagues.length > 0) {
+    leagues = leagues.sort((a, b) => a.name.localeCompare(b.name));
+  }
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -85,16 +101,16 @@ export default function Admin() {
         <div className="flex-grow overflow-y-auto p-4 w-full border-b-2">
           {leagues.length ? (
             <ul>
-              {leagues.map((league: LeagueRecord) => (
+              {leagues.map((league: League) => (
                 <div
                   className=" flex justify-between items-center hover:bg-gray-100 p-3 m-1 rounded-lg cursor-pointer"
-                  key={league.id}
+                  key={league.name}
                   onClick={() => {
                     setEditingLeague(league);
                     setContentState(ContentState.editLeague);
                   }}
                 >
-                  <div>{league.leagueName || <i>No Name</i>}</div>
+                  <div>{league.name || <i>No Name</i>}</div>
                 </div>
               ))}
             </ul>

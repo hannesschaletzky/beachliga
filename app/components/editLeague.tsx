@@ -1,24 +1,25 @@
 import { Form } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import { LeagueRecord } from "../data";
+import { League } from "../types";
 
 export default function EditLeague({
   league,
   cancel,
 }: {
-  league: LeagueRecord;
+  league: League;
   cancel: () => void;
 }) {
-  const [leagueName, setLeagueName] = useState(league.leagueName);
+  const [name, setName] = useState(league.name);
   const [numberOfTeams, setNumberOfTeams] = useState(league.numberOfTeams);
   const [numberOfGamedays, setNumberOfGamedays] = useState(
     league.numberOfGamedays
   );
   const [numberOfCourts, setNumberOfCourts] = useState(league.numberOfCourts);
   const [address, setAddress] = useState(league.adress);
+  const oldName = league.name;
 
   useEffect(() => {
-    setLeagueName(league.leagueName);
+    setName(league.name);
     setNumberOfTeams(league.numberOfTeams);
     setNumberOfGamedays(league.numberOfGamedays);
     setNumberOfCourts(league.numberOfCourts);
@@ -35,14 +36,13 @@ export default function EditLeague({
         id="edit-league-form"
         onSubmit={cancel}
       >
-        <input type="hidden" name="leagueId" value={league.id} />
-
+        <input hidden={true} name="oldName" value={oldName} type="text" />
         <div className="flex items-center gap-4">
-          <span className="text-right text-lg w-48">Liganame:</span>
+          <span className="text-right text-lg w-48">Name:</span>
           <input
-            name="leagueName"
-            value={leagueName}
-            onChange={(e) => setLeagueName(e.target.value)}
+            name="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             type="text"
             className="p-2 border border-gray-300 rounded"
           />
@@ -102,7 +102,10 @@ export default function EditLeague({
           </button>
           <button
             type="submit"
+            formMethod="put"
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            name="_action"
+            value="put"
           >
             Speichern
           </button>
