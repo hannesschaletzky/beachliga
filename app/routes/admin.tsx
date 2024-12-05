@@ -3,17 +3,12 @@
 
 import { ActionFunctionArgs, json, redirect } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
-import { cloneElement, useState } from "react";
+import { useState } from "react";
 import CreateLeague from "~/components/createLeague";
 import EditLeague from "~/components/editLeague";
 
+import { deleteLeague, getLeagues, insertLeague } from "~/api/dynamo";
 import { League } from "../types";
-import {
-  deleteLeague,
-  getLeagues,
-  insertLeague,
-  updateLeague,
-} from "~/api/dynamo";
 
 enum ContentState {
   initial,

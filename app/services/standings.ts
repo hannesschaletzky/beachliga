@@ -6,6 +6,8 @@ export default function calculateStandings(matches: Match[]) {
     {
       games: number;
       wins: number;
+      ties: number;
+      losses: number;
       setsWon: number;
       setsLost: number;
       pointsWon: number;
@@ -29,6 +31,8 @@ export default function calculateStandings(matches: Match[]) {
       teamStats[team1] = {
         games: 0,
         wins: 0,
+        ties: 0,
+        losses: 0,
         setsWon: 0,
         setsLost: 0,
         pointsWon: 0,
@@ -39,6 +43,8 @@ export default function calculateStandings(matches: Match[]) {
       teamStats[team2] = {
         games: 0,
         wins: 0,
+        ties: 0,
+        losses: 0,
         setsWon: 0,
         setsLost: 0,
         pointsWon: 0,
@@ -58,7 +64,8 @@ export default function calculateStandings(matches: Match[]) {
     sets.forEach(({ team1: t1Points, team2: t2Points }) => {
       if (t1Points !== undefined && t2Points !== undefined) {
         if (t1Points > t2Points) team1SetsWon++;
-        else team2SetsWon++;
+        else if (t1Points < t2Points) team2SetsWon++;
+
         teamStats[team1].pointsWon += t1Points;
         teamStats[team1].pointsLost += t2Points;
         teamStats[team2].pointsWon += t2Points;
@@ -73,16 +80,31 @@ export default function calculateStandings(matches: Match[]) {
     teamStats[team2].setsWon += team2SetsWon;
     teamStats[team2].setsLost += team1SetsWon;
 
-    if (team1SetsWon > team2SetsWon) teamStats[team1].wins++;
-    else teamStats[team2].wins++;
+    if (team1SetsWon > team2SetsWon) {
+      teamStats[team1].wins++;
+      teamStats[team2].losses++;
+    } else if (team2SetsWon > team1SetsWon) {
+      teamStats[team2].wins++;
+      teamStats[team1].losses++;
+    } else {
+      teamStats[team1].ties++;
+      teamStats[team2].ties++;
+    }
   });
 
   const standings = Object.entries(teamStats).map(([team, stats]) => ({
     team,
     games: stats.games,
     wins: stats.wins,
+    ties: stats.ties,
+    losses: stats.losses,
+    setsWon: stats.setsWon,
+    setsLost: stats.setsLost,
     setRatio: stats.setsWon - stats.setsLost,
+    pointsWon: stats.pointsWon,
+    pointsLost: stats.pointsLost,
     pointRatio: stats.pointsWon - stats.pointsLost,
+    pointKoe: stats.pointsWon / stats.pointsLost,
   }));
 
   standings.sort(

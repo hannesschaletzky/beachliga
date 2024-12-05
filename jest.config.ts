@@ -13,6 +13,10 @@ const config: Config.InitialOptions = {
   testPathIgnorePatterns: ["/node_modules/", "/tests/e2e/"],
   moduleNameMapper: {
     // mapping the tsconfig paths, so jest can access them
+    "^~/services/(.*)$": "<rootDir>/app/services/$1",
+    "^~/components/(.*)$": "<rootDir>/app/components/$1",
+    "^~/routes/(.*)$": "<rootDir>/app/routes/$1",
+    "^~/(.*)$": "<rootDir>/app/$1",
   },
 };
 export default config;

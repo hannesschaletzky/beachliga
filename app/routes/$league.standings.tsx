@@ -1,13 +1,12 @@
 import { json, LoaderFunctionArgs } from "@remix-run/node";
+import { useLoaderData, useParams } from "@remix-run/react";
 import { getMatches } from "~/api/dynamo";
+import calculateStandings from "~/services/standings";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const matches = await getMatches();
   return json({ name: params.league, matches });
 }
-import { useLoaderData, useParams } from "@remix-run/react";
-import { Match } from "~/types";
-import calculateStandings from "~/services/standings";
 
 export default function Standings() {
   const { matches } = useLoaderData<typeof loader>();
@@ -26,18 +25,18 @@ export default function Standings() {
       <table>
         <thead>
           <tr>
-            <th>Platz</th>
+            <th>#</th>
             <th>Team</th>
-            <th>Absolvierte Spiele</th>
-            <th>Siege</th>
-            <th>Satzverhältnis</th>
-            <th>Punkteverhältnis</th>
+            <th>W/T/L</th>
+            <th></th>
+            <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           {standings.map((team, index) => (
             <tr key={team.team}>
-              <td>{index + 1}</td>
+              <td>{index + 1}.</td>
               <td>{team.team}</td>
               <td>{team.games}</td>
               <td>{team.wins}</td>

@@ -1,15 +1,15 @@
 import { json, LoaderFunctionArgs } from "@remix-run/node";
 import { Link, Outlet, useLoaderData, useParams } from "@remix-run/react";
+import { useState } from "react";
 import { getMatches } from "~/api/dynamo";
 import { Match } from "../types";
-import { useState } from "react";
 
 enum ContentState {
   games,
   enterMatch,
 }
 
-function calculateResult(dynamoMatch: Match): String {
+function calculateResult(dynamoMatch: Match): string {
   const set1_team1_points = dynamoMatch.set1_team1_points;
   const set1_team2_points = dynamoMatch.set1_team2_points;
   const set2_team1_points = dynamoMatch.set2_team1_points;
@@ -75,8 +75,11 @@ export default function Matches() {
                 Spieltag {index + 1}: {date}
               </div>
 
-              {matches.map((match, index) => (
-                <div className="p-6 bg-gray-200 m-4 flex flex-col items-center text-center rounded-lg shadow-md flex-wrap">
+              {matches.map((match) => (
+                <div
+                  className="p-6 bg-gray-200 m-4 flex flex-col items-center text-center rounded-lg shadow-md flex-wrap"
+                  key={match.match_number}
+                >
                   <div className="flex flex-wrap justify-between w-full mb-2">
                     <div className="">Spiel {match.match_number}</div>
                     <div className="">{match.date}</div>
