@@ -9,7 +9,7 @@ export default function CreateLeague(props: LeagueProps) {
   const [name, setName] = useState("");
   const handleChange = (e: any) => {
     const value = e.target.value.replace(/\s/g, "");
-    const sanitizedValue = value.replace(/[^A-Za-z0-9_-]/g, ""); // Only allow letters, numbers, underscores, and hyphens
+    const sanitizedValue = value.replace(/[^A-Za-z0-9_-]/g, "");
     setName(sanitizedValue);
   };
   return (
