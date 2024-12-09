@@ -6,6 +6,7 @@ import {
 } from "@remix-run/node";
 import { useLoaderData, Form, useParams } from "@remix-run/react";
 import { getMatches, updateMatch } from "~/api/dynamo";
+import { getDateFromDate } from "~/services/date";
 import { Match, Points } from "~/types";
 
 export async function loader({ params }: LoaderFunctionArgs) {

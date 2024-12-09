@@ -3,39 +3,12 @@ import { Link, Outlet, useLoaderData, useParams } from "@remix-run/react";
 import { useState } from "react";
 import { getMatches } from "~/api/dynamo";
 import { Match } from "../types";
+import { calculateResult } from "~/services/result";
+import { getDateFromDate, getTimeFromDate } from "~/services/date";
 
 enum ContentState {
   games,
   enterMatch,
-}
-
-function calculateResult(dynamoMatch: Match): string {
-  const set1_team1_points = dynamoMatch.set1_team1_points;
-  const set1_team2_points = dynamoMatch.set1_team2_points;
-  const set2_team1_points = dynamoMatch.set2_team1_points;
-  const set2_team2_points = dynamoMatch.set2_team2_points;
-  const set3_team1_points = dynamoMatch.set3_team1_points;
-  const set3_team2_points = dynamoMatch.set3_team2_points;
-
-  if (set1_team1_points == set1_team2_points) {
-    return "";
-  }
-
-  const setsWonByTeam1 =
-    (set1_team1_points > set1_team2_points ? 1 : 0) +
-    (set2_team1_points > set2_team2_points ? 1 : 0) +
-    (set3_team1_points > set3_team2_points ? 1 : 0);
-  const setsWonByTeam2 =
-    (set1_team1_points < set1_team2_points ? 1 : 0) +
-    (set2_team1_points < set2_team2_points ? 1 : 0) +
-    (set3_team1_points < set3_team2_points ? 1 : 0);
-
-  if (set3_team1_points == set3_team2_points) {
-    const twoSetW = `${setsWonByTeam1}:${setsWonByTeam2} (${set1_team1_points}:${set1_team2_points}, ${set2_team1_points}:${set2_team2_points})`;
-    return twoSetW;
-  }
-  const threeSetW = `${setsWonByTeam1}:${setsWonByTeam2} (${set1_team1_points}:${set1_team2_points}, ${set2_team1_points}:${set2_team2_points}, ${set3_team1_points}:${set3_team2_points})`;
-  return threeSetW;
 }
 
 export async function loader({ params }: LoaderFunctionArgs) {
@@ -55,24 +28,30 @@ export default function Matches() {
     (a, b) => a.match_number - b.match_number
   );
 
-  const matchesByDate = Object.entries(
+  const formattedMatchesByDate = Object.entries(
     sortedMatches
       .filter((match) => match.league_name === league)
       .reduce((acc: Record<string, (typeof match)[]>, match) => {
-        acc[match.date] = acc[match.date] || [];
-        acc[match.date].push(match);
+        const normalizedDate = new Date(match.date).toISOString().split("T")[0];
+        acc[normalizedDate] = acc[normalizedDate] || [];
+        acc[normalizedDate].push(match);
         return acc;
       }, {})
-  );
+  ).map(([date, matches]) => ({
+    formattedDate: getDateFromDate(date),
+    matches: matches.sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    ),
+  }));
 
   return (
     <div className="">
       {contentState == ContentState.games && (
         <div className="">
-          {matchesByDate.map(([date, matches], index) => (
+          {formattedMatchesByDate.map(({ formattedDate, matches }, index) => (
             <div key={index} className="my-2">
               <div className="font-bold mx-2 text-xl text-gray-700">
-                Spieltag {index + 1}: {date}
+                Spieltag {index + 1}: {formattedDate}
               </div>
 
               {matches.map((match) => (
@@ -82,21 +61,23 @@ export default function Matches() {
                 >
                   <div className="flex flex-wrap justify-between w-full mb-2">
                     <div className="">Spiel {match.match_number}</div>
-                    <div className="">{match.date}</div>
+                    <div className="">{getTimeFromDate(match.date)} Uhr</div>
                     <div className="">Court {match.court}</div>
                   </div>
-                  <div className="flex flex-wrap justify-center w-full   mb-2">
-                    <div className=" text-center font-semibold mx-2">
+                  <div className="flex w-full justify-center mb-2">
+                    <div className="text-center w-[150px] font-semibold mx-2">
                       {match.team1}
                     </div>
-                    <div>:</div>
-                    <div className=" text-center font-semibold mx-2">
+
+                    <div className="flex-row mx-2">:</div>
+
+                    <div className="text-center w-[150px] font-semibold mx-2">
                       {match.team2}
                     </div>
                   </div>
 
                   <div className="flex flex-wrap justify-center w-full mb-2">
-                    <div>{calculateResult(match)}</div>
+                    <div>{calculateResult(match, match.team1)}</div>
                   </div>
                   <div className="text-gray-600 text-center">
                     <Link
