@@ -60,7 +60,9 @@ export default function MatchResultPage() {
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white shadow-lg rounded-lg flex flex-col items-center">
       <div className="flex flex-row justify-between w-full">
-        <div className="text-center font-extralight mb-4">{date}</div>
+        <div className="text-center font-extralight mb-4">
+          {getDateFromDate(date)}
+        </div>
         <div className="text-center font-extralight mb-4">
           Spiel {match_number}
         </div>

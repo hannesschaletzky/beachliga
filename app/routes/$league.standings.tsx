@@ -13,14 +13,13 @@ export async function loader({ params }: LoaderFunctionArgs) {
 export default function Standings() {
   const { matches } = useLoaderData<typeof loader>();
   const { league } = useParams();
-  const [openTeams, setOpenTeams] = useState<string[]>([]); // stores multiple open team names
+  const [openTeams, setOpenTeams] = useState<string[]>([]);
 
   const toggleTeamDetails = (teamName: string) => {
-    setOpenTeams(
-      (prev) =>
-        prev.includes(teamName)
-          ? prev.filter((name) => name !== teamName) // remove if already open
-          : [...prev, teamName] // add if not open
+    setOpenTeams((prev) =>
+      prev.includes(teamName)
+        ? prev.filter((name) => name !== teamName)
+        : [...prev, teamName]
     );
   };
 
@@ -35,24 +34,24 @@ export default function Standings() {
   const standings = calculateStandings(filteredMatches);
 
   return (
-    <div className="flex justify-start items-center p-2 m-2 rounded shadow-md bg-orange-100">
-      <table className="w-full max-w-3xl rounded border-separate border-spacing-y-2">
-        <thead className="">
-          <tr className="bg-gray-200 rounded-t-md">
-            <th className="py-2 text-center rounded-l-md">#</th>
-            <th className="py-2 text-left">Team</th>
-            <th className="py-2 text-center">Spiele</th>
-            <th className="py-2 text-center">W/T/L</th>
-            <th className="py-2 text-center">S</th>
-            <th className="py-2 text-center">P</th>
-            <th className="py-2 text-center rounded-r-md"></th>
+    <div className="flex justify-center items-center rounded-md m-2 px-2 shadow-md bg-gray-800">
+      <table className="w-full rounded text-white border-separate border-spacing-y-2">
+        <thead className="font-extrabold">
+          <tr className="bg-yellow-600 rounded-t-md">
+            <th className="font-extrabold py-2 text-center rounded-l-md">#</th>
+            <th className="font-extrabold py-2 text-left">Team</th>
+            <th className="font-extrabold py-2 text-center">Spiele</th>
+            <th className="font-extrabold py-2 text-center">W/T/L</th>
+            <th className="font-extrabold py-2 text-center">S</th>
+            <th className="font-extrabold py-2 text-center">P</th>
+            <th className="font-extrabold py-2 text-center rounded-r-md"></th>
           </tr>
         </thead>
         {standings.map((team, index) => (
           <tbody key={team.team}>
             <tr
               key={team.team}
-              className="group hover:bg-zinc-200 cursor-pointer"
+              className="group hover:bg-gray-500  cursor-pointer"
               onClick={() => toggleTeamDetails(team.team)}
             >
               <td className="text-center rounded-l-md py-2">{index + 1}.</td>
