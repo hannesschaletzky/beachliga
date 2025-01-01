@@ -22,7 +22,7 @@ export default function Matches() {
   const { league } = useParams();
 
   if (!data.matches) {
-    return <p>Keine Matches verfügbar</p>;
+    return <p className="text-white">Keine Spiele verfügbar.</p>;
   }
   const sortedMatches = data.matches.sort(
     (a, b) => a.match_number - b.match_number
@@ -49,18 +49,18 @@ export default function Matches() {
       {contentState == ContentState.games && (
         <div className="">
           {formattedMatchesByDate.map(({ formattedDate, matches }, index) => (
-            <div
-              key={index}
-              className="rounded-md p-1 m-3 border-slate-300 border-2"
-            >
-              <div className="font-bold text-xl text-center items-center text-white sticky top-0 p-2 bg-gray-800 rounded-md">
+            <div key={index} className="p-1 m-3">
+              <div className="font-bold text-xl text-center items-center p-2 text-white sticky top-0 bg-gray-800">
                 Spieltag {index + 1}: {formattedDate}
               </div>
               {/* Match Card */}
               {matches.map((match) => (
-                <div className="flex flex-col p-2 m-2 bg-slate-300">
+                <div
+                  className="flex flex-col p-2 m-4 bg-gradient-to-b from-gray-200 to-slate-50 scroll-mt-12 rounded-lg "
+                  id={`${match.match_number}`}
+                >
                   <div
-                    className="flex justify-between border-dashed border-gray-800 border-b-2"
+                    className="flex justify-between"
                     key={match.match_number}
                   >
                     <div>#{match.match_number}</div>
@@ -75,7 +75,9 @@ export default function Matches() {
                       <div>📝</div>
                     </Link>
                   </div>
-                  <div className="flex justify-start ">Ref:{match.referee}</div>
+                  <div className="flex justify-center border-dashed border-gray-800 border-b-2 text-sm">
+                    {match.referee}
+                  </div>
                   <div className="flex flex-row justify-between">
                     <div className="flex flex-col">
                       <div className="mt-2">{match.team1.split("/")[0]}</div>
@@ -107,68 +109,6 @@ export default function Matches() {
                     </div>
                   </div>
                 </div>
-                // <div
-                //   className="p-3 bg-gray-200 m-2 flex flex-col items-center text-center rounded-lg shadow-md flex-wrap"
-                //   key={match.match_number}
-                // >
-                //   <div className="flex flex-wrap justify-between w-full">
-                //     <div className="">Spiel {match.match_number}</div>
-                //     <div className="">{getTimeFromDate(match.date)} Uhr</div>
-                //     <div className="">Court {match.court}</div>
-                //     <Link
-                //       onClick={() => {
-                //         setContentState(ContentState.enterMatch);
-                //       }}
-                //       to={`/${match.league_name}/matches/${match.match_number}`}
-                //     >
-                //       <div className="px-1 border-2 bg-gray-800 text-white rounded text-center hover:bg-blue-400">
-                //         📝
-                //       </div>
-                //     </Link>
-                //   </div>
-                //   <div className="items-center w-full text-xs">
-                //     Ref: {match.referee}
-                //   </div>
-                //   <div className="flex items-center justify-between w-full">
-                //     <div
-                //       className={`text-center mx-2 ${
-                //         calculateResult(match, match.team1).startsWith("2")
-                //           ? "font-extrabold"
-                //           : "font-medium"
-                //       }`}
-                //     >
-                //       {match.team1}
-                //     </div>
-
-                //     <div className="text-left font-bold mx-2">:</div>
-
-                //     <div
-                //       className={`text-center mx-2 ${
-                //         calculateResult(match, match.team2).startsWith("2")
-                //           ? "font-extrabold"
-                //           : "font-medium"
-                //       }`}
-                //     >
-                //       {match.team2}
-                //     </div>
-                //   </div>
-
-                //   <div className="flex flex-wrap justify-center w-full">
-                //     <span className="font-extrabold">
-                //       {calculateResult(match, match.team1)
-                //         .slice(0, 3)
-                //         .replace(/:/g, " : ")}
-                //     </span>
-                //   </div>
-                //   <div className=" flex text-center">
-                //     <span>
-                //       {calculateResult(match, match.team1).slice(
-                //         5,
-                //         calculateResult(match, match.team1).length - 1
-                //       )}
-                //     </span>
-                //   </div>
-                // </div>
               ))}
             </div>
           ))}

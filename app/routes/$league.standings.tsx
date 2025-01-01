@@ -24,7 +24,7 @@ export default function Standings() {
   };
 
   if (matches == undefined) {
-    return <div>No teams here!</div>;
+    return <div className="text-white"> Keine Spiele verfügbar.</div>;
   }
 
   const filteredMatches = matches.filter(
@@ -34,27 +34,29 @@ export default function Standings() {
   const standings = calculateStandings(filteredMatches);
 
   return (
-    <div className="flex justify-center items-center rounded-md m-2 px-2 shadow-md bg-gray-800">
-      <table className="w-full rounded text-white border-separate border-spacing-y-2">
-        <thead className="font-extrabold">
-          <tr className="bg-yellow-600 rounded-t-md">
-            <th className="font-extrabold py-2 text-center rounded-l-md">#</th>
-            <th className="font-extrabold py-2 text-left">Team</th>
-            <th className="font-extrabold py-2 text-center">Spiele</th>
-            <th className="font-extrabold py-2 text-center">W/T/L</th>
-            <th className="font-extrabold py-2 text-center">S</th>
-            <th className="font-extrabold py-2 text-center">P</th>
-            <th className="font-extrabold py-2 text-center rounded-r-md"></th>
+    <div className="flex justify-center items-center rounded-md m-2 px-2 shadow-md border-slate-300 border-2">
+      <table className="w-full rounded text-white border-spacing-2">
+        <thead className="font-extrabold border-b-2">
+          <tr className="">
+            <th className="text-center">#</th>
+            <th className="text-left">Team</th>
+            <th className="">Spiele</th>
+            <th className="">W/T/L</th>
+            <th className="">S</th>
+            <th className="">P</th>
+            <th className=""></th>
           </tr>
         </thead>
         {standings.map((team, index) => (
-          <tbody key={team.team}>
+          <tbody className="" key={team.team}>
             <tr
               key={team.team}
-              className="group hover:bg-gray-500  cursor-pointer"
+              className="group hover:bg-yellow-600  cursor-pointer"
               onClick={() => toggleTeamDetails(team.team)}
             >
-              <td className="text-center rounded-l-md py-2">{index + 1}.</td>
+              <td className="text-center rounded-l-md py-2 font-extrabold">
+                {index + 1}.
+              </td>
               <td className="py-2 truncate max-w-[150px]" title={team.team}>
                 {team.team}
               </td>

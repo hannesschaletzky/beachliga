@@ -21,7 +21,7 @@ export default function TeamDetails({ team }: TeamDetailsProps) {
   }
   const teamMatches = matches.filter(
     (match) =>
-      match.team1 === team ||
+      (match.team1 === team && match.league_name == league) ||
       (match.team2 === team && match.league_name == league)
   );
 
@@ -29,10 +29,10 @@ export default function TeamDetails({ team }: TeamDetailsProps) {
     <div className="">
       <div className="mx-2 rounded">
         {teamMatches.map((match, index) => (
-          <Link
-            to={`/${league}/matches`}
+          <a
+            href={`/${league}/matches#${match.match_number}`}
             key={index}
-            className="mb-4 flex ml-4 rounded bg-gray-500"
+            className="mb-4 flex ml-4 rounded bg-gray-500 hover:border-2"
           >
             <div className="flex flex-col items-start justify-center w-[40px]">
               {calculateResult(match, team).charAt(0) === "2" && (
@@ -51,9 +51,9 @@ export default function TeamDetails({ team }: TeamDetailsProps) {
             <div className="ml-3 flex flex-col items-end">vs.</div>
             <div className="flex flex-col justify-center">
               <div> {team === match.team1 ? match.team2 : match.team1}</div>
-              <div>{calculateResult(match, team)}</div>
+              <div>{calculateResult(match, team)} ➚</div>
             </div>
-          </Link>
+          </a>
         ))}
       </div>
     </div>

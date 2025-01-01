@@ -11,11 +11,13 @@ export default function League() {
 
   return (
     <div>
-      <nav className="bg-gray-800 p-4 shadow-lg">
-        <div className="container  flex justify-start">
-          <ul className="flex space-x-4 text-white text-lg">
+      <nav className="bg-gradient-to-b from-gray-200 to-slate-50 p-4">
+        <div className="flex justify-start">
+          <ul className="flex space-x-4 text-lg">
             <li>
-              <div className="font-extrabold">{league}</div>
+              <NavLink to={`/${data.name}`} className="font-extrabold">
+                {league}
+              </NavLink>
             </li>
             <li>
               <NavLink
@@ -41,11 +43,23 @@ export default function League() {
                 Spiele
               </NavLink>
             </li>
+            <li>
+              <NavLink
+                to={`/${data.name}/timeTable`}
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-yellow-400 font-bold"
+                    : "hover:text-yellow-400 transition duration-300"
+                }
+              >
+                Zeitplan
+              </NavLink>
+            </li>
           </ul>
         </div>
       </nav>
 
-      <div className="mt-8">
+      <div className="mt-4">
         <Outlet />
       </div>
     </div>
