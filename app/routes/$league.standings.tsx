@@ -34,9 +34,9 @@ export default function Standings() {
   const standings = calculateStandings(filteredMatches);
 
   return (
-    <div className="flex justify-center items-center rounded-md m-2 px-2 shadow-md border-slate-300 border-2">
-      <table className="w-full rounded text-white border-spacing-2">
-        <thead className="font-extrabold border-b-2">
+    <div className="flex justify-center items-center rounded-md m-2 mt-4 px-2">
+      <table className="w-full rounded border-spacing-2">
+        <thead className="font-extrabold border-b-2 text-white">
           <tr className="">
             <th className="text-center">#</th>
             <th className="text-left">Team</th>
@@ -51,7 +51,7 @@ export default function Standings() {
           <tbody className="" key={team.team}>
             <tr
               key={team.team}
-              className="group hover:bg-yellow-600  cursor-pointer"
+              className="text-white"
               onClick={() => toggleTeamDetails(team.team)}
             >
               <td className="text-center rounded-l-md py-2 font-extrabold">
@@ -66,7 +66,15 @@ export default function Standings() {
               </td>
               <td className="text-center py-2">{team.setRatio}</td>
               <td className="text-center py-2">{team.pointRatio}</td>
-              <td className="text-center rounded-r-md py-2">▼</td>
+              {openTeams.includes(team.team) ? (
+                <>
+                  <td className="text-center rounded-r-md py-2">▼</td>
+                </>
+              ) : (
+                <>
+                  <td className="text-center rounded-r-md py-2">◀︎</td>
+                </>
+              )}
             </tr>
 
             {openTeams.includes(team.team) && (

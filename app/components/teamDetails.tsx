@@ -32,7 +32,7 @@ export default function TeamDetails({ team }: TeamDetailsProps) {
           <a
             href={`/${league}/matches#${match.match_number}`}
             key={index}
-            className="mb-4 flex ml-4 rounded bg-gray-500 hover:border-2"
+            className="mb-2 flex ml-4 rounded bg-gradient-to-b from-gray-200 to-slate-50"
           >
             <div className="flex flex-col items-start justify-center w-[40px]">
               {calculateResult(match, team).charAt(0) === "2" && (
@@ -48,10 +48,10 @@ export default function TeamDetails({ team }: TeamDetailsProps) {
               )}
             </div>
 
-            <div className="ml-3 flex flex-col items-end">vs.</div>
+            <div className="ml-3 flex flex-col items-end">vs.&nbsp;</div>
             <div className="flex flex-col justify-center">
               <div> {team === match.team1 ? match.team2 : match.team1}</div>
-              <div>{calculateResult(match, team)} ➚</div>
+              <div>{calculateResult(match, team)}</div>
             </div>
           </a>
         ))}

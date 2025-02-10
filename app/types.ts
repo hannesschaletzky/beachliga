@@ -67,3 +67,15 @@ export type Points = {
   set3_team1_points: number;
   set3_team2_points: number;
 };
+
+export type Team = {
+  league_name: string;
+  team_name: string;
+  createdAt: string;
+};
+
+export type Dynamo_Team = {
+  league_name: { S: string };
+  team_name: { S: string };
+  createdAt: { S: string };
+};

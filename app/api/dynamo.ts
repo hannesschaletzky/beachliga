@@ -1,4 +1,6 @@
 import {
+  AttributeValue,
+  BatchWriteItemCommand,
   DeleteItemCommand,
   DynamoDBClient,
   GetItemCommand,
@@ -7,7 +9,16 @@ import {
   ScanCommand,
   UpdateItemCommand,
 } from "@aws-sdk/client-dynamodb";
-import { Dynamo_League, Dynamo_Match, League, Match, Points } from "~/types";
+import Matches from "~/routes/$league.matches";
+import {
+  Dynamo_League,
+  Dynamo_Match,
+  Dynamo_Team,
+  League,
+  Match,
+  Points,
+  Team,
+} from "~/types";
 
 const client = new DynamoDBClient({ region: "eu-central-1" });
 
@@ -199,23 +210,156 @@ export async function updateMatch(
   const command = new UpdateItemCommand(input);
   const response = await client.send(command);
 }
-// export async function getMatchByMatchNumberAndLeague(
-//   leagueName: string,
-//   matchNumber: number
-// ) {
-//   console.log("leagueName: " + leagueName);
-//   console.log("leagueNumber: " + matchNumber);
-//   const input = {
-//     Key: {
-//       league_name: {
-//         S: leagueName,
-//       },
-//       match_number: {
-//         N: matchNumber.toString(),
-//       },
-//     },
-//     TableName: "Matches",
-//   };
-//   const command = new GetItemCommand(input);
-//   const response = await client.send(command);
-// }
+
+export async function insertMatch(match: Match) {
+  const input = {
+    Item: {
+      league_name: {
+        S: match.league_name,
+      },
+      match_number: {
+        N: match.match_number.toString(),
+      },
+      court: {
+        N: match.court.toString(),
+      },
+      date: {
+        S: match.date,
+      },
+      referee: {
+        S: match.referee,
+      },
+      set1_team1_points: {
+        N: match.set1_team1_points.toString(),
+      },
+      set1_team2_points: {
+        N: match.set1_team2_points.toString(),
+      },
+      set2_team1_points: {
+        N: match.set2_team1_points.toString(),
+      },
+      set2_team2_points: {
+        N: match.set2_team2_points.toString(),
+      },
+      set3_team1_points: {
+        N: match.set3_team1_points.toString(),
+      },
+      set3_team2_points: {
+        N: match.set3_team2_points.toString(),
+      },
+      team1: {
+        S: match.team1,
+      },
+      team2: {
+        S: match.team2,
+      },
+    },
+    TableName: "Matches",
+  };
+  const command = new PutItemCommand(input);
+  const response = await client.send(command);
+}
+
+export async function getTeams() {
+  const params = {
+    TableName: "Teams",
+  };
+  try {
+    const command = new ScanCommand(params);
+    const data = await client.send(command);
+
+    if (data.Items == undefined) {
+      return [];
+    }
+    const dynamoTeams = data.Items as unknown as Dynamo_Team[];
+    const teams: Team[] = dynamoTeams.map((dynamoTeams) => {
+      return {
+        league_name: dynamoTeams.league_name.S,
+        team_name: dynamoTeams.team_name.S,
+        createdAt: dynamoTeams.createdAt.S,
+      };
+    });
+    return teams;
+  } catch (err) {
+    console.error("Error:", err);
+  }
+}
+export async function insertTeam(team: Team) {
+  const input = {
+    Item: {
+      league_name: {
+        S: team.league_name,
+      },
+      team_name: {
+        S: team.team_name,
+      },
+      createdAt: {
+        S: team.createdAt,
+      },
+    },
+    TableName: "Teams",
+  };
+  const command = new PutItemCommand(input);
+  const response = await client.send(command);
+}
+
+function toDynamoDBFormat(match: Match): Record<string, AttributeValue> {
+  return {
+    league_name: { S: match.league_name },
+    match_number: { N: match.match_number.toString() },
+    court: { N: match.court.toString() },
+    date: { S: match.date },
+    referee: { S: match.referee },
+    set1_team1_points: { N: match.set1_team1_points.toString() },
+    set1_team2_points: { N: match.set1_team2_points.toString() },
+    set2_team1_points: { N: match.set2_team1_points.toString() },
+    set2_team2_points: { N: match.set2_team2_points.toString() },
+    set3_team1_points: { N: match.set3_team1_points.toString() },
+    set3_team2_points: { N: match.set3_team2_points.toString() },
+    team1: { S: match.team1 },
+    team2: { S: match.team2 },
+  };
+}
+
+export async function batchWriteMatches(matches: Match[]) {
+  const batches = [];
+
+  // Erstelle Batches von je 25 Einträgen
+  for (let i = 0; i < matches.length; i += 25) {
+    batches.push(matches.slice(i, i + 25));
+  }
+
+  for (const batch of batches) {
+    const requestItems = batch.map((match) => ({
+      PutRequest: {
+        Item: toDynamoDBFormat(match),
+      },
+    }));
+
+    try {
+      await client.send(
+        new BatchWriteItemCommand({
+          RequestItems: {
+            Matches: requestItems,
+          },
+        })
+      );
+    } catch (error) {
+      console.error("Batch write failed:", error);
+      // Optional: Fehlerhafte Einträge erneut versuchen
+    }
+  }
+}
+
+export async function deleteTeam(leagueName: string, teamName: string) {
+  const input = {
+    Key: {
+      league_name: { S: leagueName }, // Partition Key
+      team_name: { S: teamName }, // Sort Key
+    },
+    TableName: "Teams",
+  };
+
+  const command = new DeleteItemCommand(input);
+  const response = await client.send(command);
+}

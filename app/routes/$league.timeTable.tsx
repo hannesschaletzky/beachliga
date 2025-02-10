@@ -13,23 +13,29 @@ export async function loader({ params }: LoaderFunctionArgs) {
 export default function TeamTimetable() {
   const { league } = useParams();
   const data = useLoaderData<typeof loader>();
-  const [selectedTeams, setSelectedTeams] = useState<string[]>(["alle"]);
+  const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
 
   if (!data.matches) {
     return <p className="text-white">Keine Spiele verfügbar.</p>;
   }
 
   const teams = Array.from(
-    new Set(data.matches.map((match) => [match.team1, match.team2]).flat())
+    new Set(
+      data.matches.flatMap((match) => [match.team1, match.team2, match.referee]) // Alle relevanten Felder
+    )
   );
 
-  const filteredMatches = data.matches.filter(
-    (match) =>
-      selectedTeams.includes("alle") ||
-      selectedTeams.includes(match.team1) ||
-      selectedTeams.includes(match.team2) ||
-      selectedTeams.includes(match.referee)
-  );
+  const resetSelection = () => setSelectedTeams([]);
+
+  const filteredMatches = data.matches
+    .filter((match) => match.league_name === league)
+    .filter(
+      (match) =>
+        selectedTeams.length === 0 ||
+        selectedTeams.includes(match.team1) ||
+        selectedTeams.includes(match.team2) ||
+        selectedTeams.includes(match.referee)
+    );
 
   const matchesByTeam = filteredMatches.reduce(
     (acc: Record<string, typeof filteredMatches>, match) => {
@@ -44,14 +50,26 @@ export default function TeamTimetable() {
   );
 
   return (
-    <div>
+    <div className="mt-4">
       <div className="flex flex-col items-center space-x-2 p-2">
-        <label htmlFor="team-filter" className="font-bold text-white">
-          Wähle Team(s):
-        </label>
+        <div className="flex flex-row items-center justify-between w-full">
+          <label
+            htmlFor="team-filter"
+            className="flex font-semibold ml-5 text-white"
+          >
+            Wähle Team(s):
+          </label>
+
+          <button
+            className="flex p-1 bg-red-500 text-white rounded mr-2"
+            onClick={resetSelection}
+          >
+            Reset
+          </button>
+        </div>
         <select
           id="team-filter"
-          className="p-2  bg-slate-300 rounded"
+          className="w-11/12 p-1 m-2 bg-gradient-to-b from-gray-200 to-slate-50 rounded-md focus:outline-none"
           multiple
           value={selectedTeams}
           onChange={(e) =>
@@ -60,9 +78,8 @@ export default function TeamTimetable() {
             )
           }
         >
-          <option value="alle">Alle</option>
           {teams.map((team) => (
-            <option key={team} value={team}>
+            <option key={team} value={team} className="active:text-black">
               {team}
             </option>
           ))}
@@ -71,55 +88,98 @@ export default function TeamTimetable() {
 
       {Object.entries(matchesByTeam)
         .filter(
-          ([team]) =>
-            selectedTeams.includes("alle") || selectedTeams.includes(team)
+          ([team]) => selectedTeams.length === 0 || selectedTeams.includes(team)
         )
         .map(([team, matches]) => (
           <div key={team} className="p-4 rounded-md m-2">
             <h2 className="text-xl text-white font-bold text-center">{team}</h2>
-            <div className="space-y-2">
+            <div className="space-y-4">
               {matches.map((match, index) => (
                 <a
                   href={`/${league}/matches#${match.match_number}`}
                   key={index}
-                  className="mb-4 flex rounded bg-slate-300 hover:border-2"
+                  className="flex flex-col justify-between rounded-md w-full bg-gradient-to-b from-gray-200 to-slate-50 p-2"
                 >
-                  <div className="flex flex-col items-start justify-center w-[40px]">
-                    {match.referee === team && (
-                      <div className="bg-yellow-600 ml-2 p-1 py-1 font-medium text-white rounded">
-                        REF.
+                  <div className="flex flex-row justify-between border-b-2 border-dashed border-gray-800">
+                    <div>#{match.match_number}</div>
+                    <div>{getDateFromDate(match.date)}</div>
+                    <div>{getTimeFromDate(match.date)}</div>
+                    <div>C - {match.court}</div>
+                  </div>
+                  <div className="flex flex-row my-2">
+                    <div className="items-center justify-center space-y-1">
+                      {match.referee === team && (
+                        <div className="bg-yellow-600 p-1 mt-1 font-medium text-white rounded text-lg flex items-center h-full">
+                          REF
+                        </div>
+                      )}
+                      {(match.team1 === team || match.team2 === team) && (
+                        <div className="bg-blue-600 p-1 mt-1 font-medium text-white rounded text-lg flex items-center justify-center h-full">
+                          VS
+                        </div>
+                      )}
+                    </div>
+
+                    {match.set1_team1_points === 0 &&
+                    match.set1_team2_points === 0 &&
+                    (match.team1 === team || match.team2 === team) ? (
+                      <div className="flex flex-col w-full">
+                        <div className="flex flex-row justify-between px-3">
+                          {team === match.team1 ? (
+                            <>
+                              {match.team2.split("/")[0]}
+                              <br />
+                              {match.team2.split("/")[1]}
+                            </>
+                          ) : (
+                            <>
+                              {match.team1.split("/")[0]}
+                              <br />
+                              {match.team1.split("/")[1]}
+                            </>
+                          )}
+                        </div>
                       </div>
-                    )}
-                    {(match.team1 === team || match.team2 === team) && (
-                      <div className="bg-blue-600 ml-2 p-1 px-2 py-1 font-medium text-white rounded">
-                        VS.
+                    ) : team === match.referee ? (
+                      <div className="flex flex-col w-full">
+                        <div className="flex flex-row justify-between px-3">
+                          <div>{match.team1}</div>
+                        </div>
+                        <div className="flex flex-row justify-between px-3">
+                          <div>{match.team2}</div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-row items-center w-full justify-between px-3">
+                        <div className="">
+                          {team === match.team1 ? (
+                            <>
+                              {match.team2.split("/")[0]}
+                              <br />
+                              {match.team2.split("/")[1]}
+                            </>
+                          ) : (
+                            <>
+                              {match.team1.split("/")[0]}
+                              <br />
+                              {match.team1.split("/")[1]}
+                            </>
+                          )}
+                        </div>
+                        <div className="flex flex-col">
+                          <div className=" font-semibold text-right">
+                            {calculateResult(match, team).slice(0, 3)}
+                          </div>
+                          <div>
+                            {calculateResult(match, team)
+                              .slice(4, 30)
+                              .replace("(", "")
+                              .replace(")", "")}
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
-
-                  {team === match.referee ? (
-                    <div className="flex flex-col">
-                      <div className="mx-3 flex flex-row justify-between">
-                        <div>{getDateFromDate(match.date)}</div>
-                        <div>{getTimeFromDate(match.date)}</div>
-                        <div>{`C- ${match.court}`}</div>
-                      </div>
-                      <div className="flex flex-row justify-between mx-3">
-                        <div>{match.team1}</div>
-                        <div className="font-semibold"> &nbsp;vs.&nbsp; </div>
-                        <div>{match.team2}</div>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <div className="flex flex-col justify-center pl-2 mx-2">
-                        <div>
-                          {team === match.team1 ? match.team2 : match.team1}
-                        </div>
-                        <div>{calculateResult(match, team)} ➚</div>
-                      </div>
-                    </>
-                  )}
                 </a>
               ))}
             </div>

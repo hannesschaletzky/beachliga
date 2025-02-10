@@ -20,6 +20,7 @@ export default function Matches() {
   const data = useLoaderData<typeof loader>();
   const [contentState, setContentState] = useState(ContentState.games);
   const { league } = useParams();
+  console.log(league);
 
   if (!data.matches) {
     return <p className="text-white">Keine Spiele verfügbar.</p>;
@@ -45,18 +46,18 @@ export default function Matches() {
   }));
 
   return (
-    <div className="">
+    <div className="mt-4">
       {contentState == ContentState.games && (
         <div className="">
           {formattedMatchesByDate.map(({ formattedDate, matches }, index) => (
-            <div key={index} className="p-1 m-3">
-              <div className="font-bold text-xl text-center items-center p-2 text-white sticky top-0 bg-gray-800">
+            <div key={index} className="">
+              <div className="font-bold text-xl text-center items-center text-white sticky pt-2 top-0 bg-gray-800">
                 Spieltag {index + 1}: {formattedDate}
               </div>
               {/* Match Card */}
               {matches.map((match) => (
                 <div
-                  className="flex flex-col p-2 m-4 bg-gradient-to-b from-gray-200 to-slate-50 scroll-mt-12 rounded-lg "
+                  className="flex flex-col p-2 m-4 bg-gradient-to-b from-gray-200 to-slate-50 scroll-mt-12 rounded-lg"
                   id={`${match.match_number}`}
                 >
                   <div
@@ -75,38 +76,132 @@ export default function Matches() {
                       <div>📝</div>
                     </Link>
                   </div>
-                  <div className="flex justify-center border-dashed border-gray-800 border-b-2 text-sm">
+                  <div className="flex justify-center border-dashed border-gray-800 border-b-2">
                     {match.referee}
                   </div>
                   <div className="flex flex-row justify-between">
                     <div className="flex flex-col">
-                      <div className="mt-2">{match.team1.split("/")[0]}</div>
-                      <div>{match.team1.split("/")[1]}</div>
-                      <div className="mt-2">{match.team2.split("/")[0]}</div>
-                      <div>{match.team2.split("/")[1]}</div>
-                    </div>
-                    <div className="flex flex-row">
-                      <div className="flex flex-col justify-evenly font-bold text-xl mx-3">
-                        <div>
-                          {calculateResult(match, match.team1).charAt(0)}
-                        </div>
-                        <div>
-                          {calculateResult(match, match.team2).charAt(0)}
-                        </div>
+                      <div
+                        className={`mt-2 ${
+                          calculateResult(match, match.team1).charAt(0) === "2"
+                            ? "font-bold"
+                            : ""
+                        }`}
+                      >
+                        {match.team1.split("/")[0]}
+                        <div>{match.team1.split("/")[1]}</div>
                       </div>
-                      <div className="flex flex-col justify-evenly ml-2">
-                        <div>{match.set1_team1_points}</div>
-                        <div>{match.set1_team2_points}</div>
-                      </div>
-                      <div className="flex flex-col justify-evenly ml-2">
-                        <div>{match.set2_team1_points}</div>
-                        <div>{match.set2_team2_points}</div>
-                      </div>
-                      <div className="flex flex-col justify-evenly ml-2">
-                        <div>{match.set3_team1_points}</div>
-                        <div>{match.set3_team2_points}</div>
+                      <div
+                        className={`mt-2 ${
+                          calculateResult(match, match.team2).charAt(0) === "2"
+                            ? "font-bold"
+                            : ""
+                        }`}
+                      >
+                        {match.team2.split("/")[0]}
+                        <div>{match.team2.split("/")[1]}</div>
                       </div>
                     </div>
+                    {!(
+                      match.set1_team1_points === 0 &&
+                      match.set1_team2_points === 0
+                    ) && (
+                      <div className="flex flex-row">
+                        <div className="flex flex-col justify-evenly text-xl mx-3">
+                          <div
+                            className={
+                              calculateResult(match, match.team1).charAt(0) >
+                              calculateResult(match, match.team2).charAt(0)
+                                ? "font-bold"
+                                : ""
+                            }
+                          >
+                            {calculateResult(match, match.team1).charAt(0)}
+                          </div>
+                          <div
+                            className={
+                              calculateResult(match, match.team1).charAt(0) <
+                              calculateResult(match, match.team2).charAt(0)
+                                ? "font-bold"
+                                : ""
+                            }
+                          >
+                            {calculateResult(match, match.team2).charAt(0)}
+                          </div>
+                        </div>
+                        <div className="flex flex-col justify-evenly ml-2">
+                          <div
+                            className={
+                              match.set1_team1_points > match.set1_team2_points
+                                ? "font-bold"
+                                : ""
+                            }
+                          >
+                            {match.set1_team1_points}
+                          </div>
+                          <div
+                            className={
+                              match.set1_team2_points > match.set1_team1_points
+                                ? "font-bold"
+                                : ""
+                            }
+                          >
+                            {match.set1_team2_points}
+                          </div>
+                        </div>
+                        <div className="flex flex-col justify-evenly ml-2">
+                          <div
+                            className={
+                              match.set2_team1_points > match.set2_team2_points
+                                ? "font-bold"
+                                : ""
+                            }
+                          >
+                            {match.set2_team1_points}
+                          </div>
+                          <div
+                            className={
+                              match.set2_team2_points > match.set2_team1_points
+                                ? "font-bold"
+                                : ""
+                            }
+                          >
+                            {match.set2_team2_points}
+                          </div>
+                        </div>
+                        {!(
+                          match.set1_team1_points > match.set1_team2_points &&
+                          match.set2_team1_points > match.set2_team2_points
+                        ) &&
+                          !(
+                            match.set1_team2_points > match.set1_team1_points &&
+                            match.set2_team2_points > match.set2_team1_points
+                          ) && (
+                            <div className="flex flex-col justify-evenly ml-2">
+                              <div
+                                className={
+                                  match.set3_team1_points >
+                                  match.set3_team2_points
+                                    ? "font-bold"
+                                    : ""
+                                }
+                              >
+                                {match.set3_team1_points}
+                              </div>
+                              <div
+                                className={
+                                  match.set3_team2_points >
+                                  match.set3_team1_points
+                                    ? "font-bold"
+                                    : ""
+                                }
+                              >
+                                {match.set3_team2_points}
+                              </div>
+                            </div>
+                          )}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
