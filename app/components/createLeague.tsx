@@ -13,66 +13,28 @@ export default function CreateLeague(props: LeagueProps) {
     setName(sanitizedValue);
   };
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md w-150">
-      <h1 className="text-xl font-bold mb-6 text-center">Ligaerstellung</h1>
+    <div className="flex  flex-col bg-gradient-to-b from-gray-200 to-slate-50 p-4 m-4 rounded-lg max-w-2xl">
+      <h1 className="text-xl font-bold text-center">Liganame:</h1>
 
       <Form
         action="/admin"
-        className="flex flex-col gap-4"
+        className="flex flex-col gap-2"
         id="league-form"
         onSubmit={props.submit}
       >
-        <span className="text-center">
-          Liganame: Buchstaben, Zahlen, _ oder -
-        </span>
-        <div className="flex items-center gap-4">
-          <span className="text-right text-lg w-48">Liganame:</span>
+        <span className="text-center">Buchstaben, Zahlen, _ oder -</span>
+        <div className="flex items-center gap-2">
           <input
             name="name"
             placeholder="..."
             type="text"
             value={name}
             onChange={handleChange}
-            className="p-2 border border-gray-300 rounded"
+            className="p-2 border w-full border-gray-300 rounded"
             required
           />
         </div>
-        <div className="flex items-center gap-4">
-          <span className="text-right text-lg w-48">Anzahl der Teams:</span>
-          <input
-            name="numberOfTeams"
-            placeholder="1-64"
-            type="number"
-            className="p-2 border border-gray-300 rounded"
-          />
-        </div>
-        <div className="flex items-center space-x-4">
-          <span className="text-right text-lg w-48">Anzahl der Spieltage:</span>
-          <input
-            name="numberOfGamedays"
-            placeholder="1-20"
-            type="number"
-            className="p-2 border border-gray-300 rounded"
-          />
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="text-right text-lg w-48">Anzahl der Felder:</span>
-          <input
-            name="numberOfCourts"
-            placeholder="1-50"
-            type="number"
-            className="p-2 border border-gray-300 rounded"
-          />
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="text-right text-lg w-48">Adresse:</span>
-          <input
-            name="adress"
-            placeholder="z.B.: Unter den Linden 6, 10099 Berlin"
-            type="text"
-            className="p-2 border border-gray-300 rounded"
-          />
-        </div>
+
         <div className="flex justify-end space-x-4 pt-4">
           <button
             type="submit"

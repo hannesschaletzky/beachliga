@@ -11,6 +11,8 @@ import {
 } from "@aws-sdk/client-dynamodb";
 import Matches from "~/routes/$league.matches";
 import {
+  Credentials,
+  Dynamo_Credentials,
   Dynamo_League,
   Dynamo_Match,
   Dynamo_Team,
@@ -277,6 +279,11 @@ export async function getTeams() {
         league_name: dynamoTeams.league_name.S,
         team_name: dynamoTeams.team_name.S,
         createdAt: dynamoTeams.createdAt.S,
+        short_team_name: dynamoTeams.short_team_name.S,
+        first_name_player1: dynamoTeams.first_name_player1.S,
+        first_name_player2: dynamoTeams.first_name_player2.S,
+        surname_player1: dynamoTeams.surname_player1.S,
+        surname_player2: dynamoTeams.surname_player2.S,
       };
     });
     return teams;
@@ -295,6 +302,21 @@ export async function insertTeam(team: Team) {
       },
       createdAt: {
         S: team.createdAt,
+      },
+      short_team_name: {
+        S: team.short_team_name,
+      },
+      first_name_player1: {
+        S: team.first_name_player1,
+      },
+      first_name_player2: {
+        S: team.first_name_player2,
+      },
+      surname_player1: {
+        S: team.surname_player1,
+      },
+      surname_player2: {
+        S: team.surname_player2,
       },
     },
     TableName: "Teams",
@@ -360,6 +382,64 @@ export async function deleteTeam(leagueName: string, teamName: string) {
     TableName: "Teams",
   };
 
+  const command = new DeleteItemCommand(input);
+  const response = await client.send(command);
+}
+export async function getCredentials() {
+  const params = {
+    TableName: "Credentials",
+  };
+  try {
+    const command = new ScanCommand(params);
+    const data = await client.send(command);
+
+    if (data.Items == undefined) {
+      return [];
+    }
+    const dynamoCredentials = data.Items as unknown as Dynamo_Credentials[];
+    const credentials: Credentials[] = dynamoCredentials.map(
+      (dynamoCredentials) => {
+        return {
+          league_name: dynamoCredentials.league_name.S,
+          username: dynamoCredentials.username.S,
+          password: dynamoCredentials.password.S,
+        };
+      }
+    );
+    return credentials;
+  } catch (err) {
+    console.error("Error:", err);
+  }
+}
+
+export async function insertCredentials(creds: Credentials) {
+  const input = {
+    Item: {
+      league_name: {
+        S: creds.league_name,
+      },
+
+      username: {
+        S: creds.username,
+      },
+      password: {
+        S: creds.password,
+      },
+    },
+    TableName: "Credentials",
+  };
+  const command = new PutItemCommand(input);
+  const response = await client.send(command);
+}
+export async function deleteCredentials(name: string) {
+  const input = {
+    Key: {
+      league_name: {
+        S: name,
+      },
+    },
+    TableName: "Credentials",
+  };
   const command = new DeleteItemCommand(input);
   const response = await client.send(command);
 }

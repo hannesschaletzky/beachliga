@@ -1,12 +1,14 @@
 import { Form } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import { League } from "../types";
+import { Credentials, League } from "../types";
 
 export default function EditLeague({
   league,
+  credentials,
   cancel,
 }: {
   league: League;
+  credentials: Credentials;
   cancel: () => void;
 }) {
   const [name, setName] = useState(league.name);
@@ -27,8 +29,8 @@ export default function EditLeague({
   }, [league]);
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md w-150">
-      <h1 className="text-xl font-bold mb-6 text-center">Liga bearbeiten</h1>
+    <div className="bg-gradient-to-b from-gray-200 to-slate-50 p-4 m-4 rounded-lg text-center max-w-md">
+      <h1 className="text-xl font-bold text-center pb-4">Liga bearbeiten</h1>
 
       <Form
         method="post"
@@ -37,65 +39,33 @@ export default function EditLeague({
         onSubmit={cancel}
       >
         <input hidden={true} name="oldName" value={oldName} type="text" />
-        <div className="flex items-center gap-4">
-          <span className="text-right text-lg w-48">Name:</span>
-          <input
-            name="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            type="text"
-            className="p-2 border border-gray-300 rounded"
-          />
+        <div className="flex justify-center">
+          <div className="flex flex-col">
+            <div className="flex flex-row items-center">
+              <span className="w-24 text-left p-2">Name:</span>
+              <input
+                name="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                type="text"
+                className="p-2 border border-gray-300 rounded"
+              />
+            </div>
+            <div className="flex flex-row items-center">
+              <div className="w-24 text-left p-2">Username:</div>
+              <div>{credentials.username}</div>
+            </div>
+            <div className="flex  flex-row items-center">
+              <div className="w-24 text-left p-2">Password:</div>
+              <div>{credentials.password}</div>
+            </div>
+          </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          <span className="text-right text-lg w-48">Anzahl der Teams:</span>
-          <input
-            name="numberOfTeams"
-            value={numberOfTeams}
-            onChange={(e) => setNumberOfTeams(Number(e.target.value))}
-            type="number"
-            className="p-2 border border-gray-300 rounded"
-          />
-        </div>
-
-        <div className="flex items-center gap-4">
-          <span className="text-right text-lg w-48">Anzahl der Spieltage:</span>
-          <input
-            name="numberOfGamedays"
-            value={numberOfGamedays}
-            onChange={(e) => setNumberOfGamedays(Number(e.target.value))}
-            type="number"
-            className="p-2 border border-gray-300 rounded"
-          />
-        </div>
-
-        <div className="flex items-center gap-4">
-          <span className="text-right text-lg w-48">Anzahl der Felder:</span>
-          <input
-            name="numberOfCourts"
-            value={numberOfCourts}
-            onChange={(e) => setNumberOfCourts(Number(e.target.value))}
-            type="number"
-            className="p-2 border border-gray-300 rounded"
-          />
-        </div>
-
-        <div className="flex items-center gap-4">
-          <span className="text-right text-lg w-48">Adresse:</span>
-          <input
-            name="adress"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            type="text"
-            className="p-2 border border-gray-300 rounded"
-          />
-        </div>
-
-        <div className="flex justify-end space-x-4 pt-4">
+        <div className="flex justify-center gap-2">
           <button
             type="button"
-            className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
+            className="p-2 bg-gray-400 text-white rounded hover:bg-gray-500"
             onClick={() => cancel()}
           >
             Abbruch
@@ -103,7 +73,7 @@ export default function EditLeague({
           <button
             type="submit"
             formMethod="put"
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
             name="_action"
             value="put"
           >
@@ -112,7 +82,7 @@ export default function EditLeague({
           <button
             type="submit"
             formMethod="delete"
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            className="p-2 bg-red-500 text-white rounded hover:bg-red-600"
             name="_action"
             value="delete"
           >

@@ -72,10 +72,31 @@ export type Team = {
   league_name: string;
   team_name: string;
   createdAt: string;
+  short_team_name: string;
+  first_name_player1: string;
+  first_name_player2: string;
+  surname_player1: string;
+  surname_player2: string;
 };
 
 export type Dynamo_Team = {
   league_name: { S: string };
   team_name: { S: string };
   createdAt: { S: string };
+  short_team_name: { S: string };
+  first_name_player1: { S: string };
+  first_name_player2: { S: string };
+  surname_player1: { S: string };
+  surname_player2: { S: string };
+};
+
+export type Credentials = {
+  league_name: string;
+  username: string;
+  password: string;
+};
+export type Dynamo_Credentials = {
+  league_name: { S: string };
+  username: { S: string };
+  password: { S: string };
 };

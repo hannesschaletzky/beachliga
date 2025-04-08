@@ -72,9 +72,10 @@ export default function calculateStandings(matches: Match[]) {
         teamStats[team2].pointsLost += t1Points;
       }
     });
-
-    teamStats[team1].games++;
-    teamStats[team2].games++;
+    if (team1SetsWon + team2SetsWon > 0) {
+      teamStats[team1].games++;
+      teamStats[team2].games++;
+    }
     teamStats[team1].setsWon += team1SetsWon;
     teamStats[team1].setsLost += team2SetsWon;
     teamStats[team2].setsWon += team2SetsWon;
@@ -86,7 +87,7 @@ export default function calculateStandings(matches: Match[]) {
     } else if (team2SetsWon > team1SetsWon) {
       teamStats[team2].wins++;
       teamStats[team1].losses++;
-    } else {
+    } else if (team2SetsWon == team1SetsWon && team1SetsWon != 0) {
       teamStats[team1].ties++;
       teamStats[team2].ties++;
     }

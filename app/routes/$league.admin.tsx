@@ -1,40 +1,29 @@
-import { json, LoaderFunctionArgs } from "@remix-run/node";
+import { json, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import {
   Form,
   NavLink,
   Outlet,
   useLoaderData,
+  useLocation,
   useParams,
 } from "@remix-run/react";
-import { getLeagues } from "~/api/dynamo";
-
-const AUTH_USERNAME = "admin";
-const AUTH_PASSWORD = "123456";
-
-function isAuthenticated(request: Request) {
-  const authHeader = request.headers.get("Authorization");
-
-  if (!authHeader || !authHeader.startsWith("Basic ")) {
-    return false;
-  }
-
-  // Decode the Base64 string
-  const base64Credentials = authHeader.split(" ")[1];
-  const credentials = atob(base64Credentials);
-  const [username, password] = credentials.split(":");
-
-  return username === AUTH_USERNAME && password === AUTH_PASSWORD;
-}
+import { getCredentials, getLeagues } from "~/api/dynamo";
+import { isAuthenticated } from "~/services/auth";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const leagues = await getLeagues();
+  const credentials = await getCredentials();
+
+  let league_creds = credentials?.find((l) => l.league_name === params.league);
   let league = leagues?.find((l) => l.name === params.league);
 
-  if (!league) {
-    throw new Response("League not found", { status: 404 });
+  if (!league_creds) {
+    return <div> Fehler</div>;
   }
 
-  if (!isAuthenticated(request)) {
+  if (
+    !isAuthenticated(request, league_creds?.username, league_creds?.password)
+  ) {
     return new Response("Unauthorized", {
       status: 401,
       headers: {
@@ -48,6 +37,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
 export default function LeagueAdmin() {
   const data = useLoaderData<typeof loader>();
+  const location = useLocation();
 
   return (
     <div>
@@ -87,6 +77,12 @@ export default function LeagueAdmin() {
         </div>
       </nav>
       <div className="">
+        {location.pathname === "/Winter25/admin" && (
+          <div className="flex text-white justify-center h-screen items-center">
+            Willkommen im Adminbereich!
+          </div>
+        )}
+
         <Outlet />
       </div>
     </div>
