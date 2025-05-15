@@ -73,6 +73,18 @@ export default function LeagueAdmin() {
                 Details
               </NavLink>
             </li>
+            <li>
+              <NavLink
+                to={`/${data.name}/admin/gamedays`}
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-yellow-400 font-bold"
+                    : "hover:text-yellow-400 transition duration-300"
+                }
+              >
+                Spieltage
+              </NavLink>
+            </li>
           </ul>
         </div>
       </nav>

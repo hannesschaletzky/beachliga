@@ -143,7 +143,7 @@ export default function TeamList() {
     <div className="">
       {contentState == ContentState.initial && (
         <div className="flex justify-center items-center">
-          <div className="flex justify-center p-2 w-full m-4 bg-gradient-to-b from-gray-200 to-slate-50 rounded-lg">
+          <div className="flex justify-center p-2 m-4 bg-gradient-to-b from-gray-200 to-slate-50 rounded-lg">
             <div className="">
               <div className="flex justify-center w-full border-dashed border-gray-800 pb-2 border-b-2">
                 <div className="w-12 text-center font-normal">

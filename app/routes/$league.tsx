@@ -19,6 +19,7 @@ export default function League() {
   const isAdminRoute =
     location.pathname.endsWith("/admin") ||
     location.pathname.endsWith("/teams") ||
+    location.pathname.endsWith("/gamedays") ||
     location.pathname.endsWith("/details");
 
   return (

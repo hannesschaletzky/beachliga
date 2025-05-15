@@ -47,7 +47,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const gameDays = gameDaysArr;
     const matchesPerPair = formDataObject.matchesPerPair as string;
     const courts = formDataObject.courts as string;
-    const startTime = formDataObject.time as string;
+    const startTime = formDataObject.gameday0time as string;
     const interval = formDataObject.interval as string;
 
     const teams = await getTeams();
@@ -192,7 +192,7 @@ export default function LeagueAdmin() {
         <div className="pt-4">
           <div className="flex justify-center items-center">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 w-full">
-              {Array.from({ length: 6 }).map((_, index) => (
+              {Array.from({ length: gamedays }).map((_, index) => (
                 <div
                   key={index}
                   className=" flex flex-col justify-center bg-gradient-to-b from-gray-200 to-slate-50 p-2 m-4 rounded-lg "
@@ -213,8 +213,8 @@ export default function LeagueAdmin() {
                     <div className="flex flex-col m-1 w-full">
                       <div className="mr-2 p-1">Uhrzeit</div>
                       <input
-                        id={`gameday-${index}-time`}
-                        name={`gameday-${index}-time`}
+                        id={`gameday${index}time`}
+                        name={`gameday${index}time`}
                         type="time"
                         className="p-1 rounded border border-gray-300"
                       />
@@ -254,7 +254,7 @@ export default function LeagueAdmin() {
                 defaultValue={2}
                 name="matchesPerPair"
                 type="number"
-                className="p-1 rounded border w-12 ml-28 border-gray-300"
+                className="p-1 rounded border w-12 border-gray-300"
               />
             </div>
             <div className="flex flex-row m-4 p-2 bg-gradient-to-b justify-between from-gray-200 to-slate-50 rounded-lg items-center max-w-2xl">
@@ -265,7 +265,7 @@ export default function LeagueAdmin() {
                 defaultValue={45}
                 type="number"
                 name="interval"
-                className="p-1 rounded border w-12 ml-28 border-gray-300"
+                className="p-1 rounded border w-12 border-gray-300"
               />
             </div>
           </div>
@@ -286,7 +286,7 @@ export default function LeagueAdmin() {
           type="submit"
           className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
         >
-          Speichern
+          Alle Matches erstellen
         </button>
       </Form>
     </div>

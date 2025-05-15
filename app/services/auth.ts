@@ -9,7 +9,6 @@ export function isAuthenticated(
     return false;
   }
 
-  // Decode the Base64 string
   const base64Credentials = authHeader.split(" ")[1];
   const credentials = atob(base64Credentials);
   const [username, password] = credentials.split(":");

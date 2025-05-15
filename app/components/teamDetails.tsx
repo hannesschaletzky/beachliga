@@ -9,7 +9,7 @@ interface TeamDetailsProps {
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const matches = await getMatches();
-  return json({ name: params.league, matches });
+  return { name: params.league, matches };
 }
 
 export default function TeamDetails({ team }: TeamDetailsProps) {
